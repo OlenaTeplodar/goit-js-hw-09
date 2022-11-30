@@ -7,18 +7,19 @@ const refs = {
     bodyBackgroundColor: document.querySelector('body'),
 };
 
-refs.startBtn.addEventListener('click', () => { colorBackgroundChange.onStart(); });
-refs.stopBtn.addEventListener('click', () => { colorBackgroundChange.onStop(); });
+
 
 const colorBackgroundChange = {
     intervalId: null,
     onStart() {
-        if(refs.startBtn.getAttribute('disabled')) return
-        refs.startBtn.setAttribute('disabled', true);
+        if (refs.startBtn.getAttribute('disabled')) 
+            return
+            refs.startBtn.setAttribute('disabled', true);
         this.intervalId = setInterval(() => {
             const backgroundColor = getRandomHexColor();
             refs.bodyBackgroundColor.style.backgroundColor = backgroundColor;
         }, 1000)
+        
     }, 
     onStop() {
     clearInterval(this.intervalId);
@@ -29,3 +30,6 @@ const colorBackgroundChange = {
 function getRandomHexColor() {
   return `#${Math.floor(Math.random() * 16777215).toString(16)}`;
 }
+
+refs.startBtn.addEventListener('click', colorBackgroundChange.onStart.bind(colorBackgroundChange));
+refs.stopBtn.addEventListener('click', colorBackgroundChange.onStop.bind(colorBackgroundChange));

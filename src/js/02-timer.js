@@ -29,11 +29,14 @@ const options = {
   defaultDate: new Date(),
   minuteIncrement: 1,
   onClose(selectedDates) {
-    selectedDates[0] <= options.defaultDate || refs.inputDate.value === ''
-      ? (Notiflix.Notify.failure('Please choose a date in the future'),
-        (refs.startBtn.disabled = true))
-      : (Notiflix.Notify.info('The date is correct. Push the start button!'),
-        (refs.startBtn.disabled = false));
+    if (selectedDates[0] <= Date.now()) {
+      Notiflix.Notify.failure('Please choose a date in the future');
+      refs.startBtn.disabled = true;
+    } else {
+      Notiflix.Notify.info('The date is correct. Push the start button!');
+      refs.startBtn.disabled = false;
+    }
+    
     userDate = selectedDates[0];
   },
 };
@@ -58,32 +61,31 @@ function startTimer() {
     if (timer > 0) {
       timerMarkUp(timer);
     } else {
-        // зупинка таймеру та очищення табло
+        // зупинка таймеру 
       Notiflix.Notify.info('Timer passed!');
       clearInterval(timerIdInterval);
-      defaultTimerMarkUp();
+      // defaultTimerMarkUp();
     }
   }, 1000);
 }
 
-// приведенння до двозначного представлення даних (за виключенням днів) та виведення на екран користувача
+// приведенння до двозначного представлення даних та виведення на екран користувача
 function timerMarkUp(timer) {
   const { days, hours, minutes, seconds } = convertMs(timer);
   refs.spanDataSeconds.textContent = addLeadingZero(seconds);
   refs.spanDataMinutes.textContent = addLeadingZero(minutes);
   refs.spanDataHours.textContent = addLeadingZero(hours);
-  refs.spanDataDays.textContent = days;
-  refs.inputDate.disabled = true;
+  refs.spanDataDays.textContent = addLeadingZero(days);
 }
 
 // функція "обнулення" таймеру
-function defaultTimerMarkUp() {
-  refs.spanDataSeconds.textContent = '00';
-  refs.spanDataMinutes.textContent = '00';
-  refs.spanDataHours.textContent = '00';
-  refs.spanDataDays.textContent = '00';
-  refs.inputDate.disabled = false;
-}
+// function defaultTimerMarkUp() {
+//   refs.spanDataSeconds.textContent = '00';
+//   refs.spanDataMinutes.textContent = '00';
+//   refs.spanDataHours.textContent = '00';
+//   refs.spanDataDays.textContent = '00';
+//   refs.inputDate.disabled = false;
+// }
 
 function convertMs(ms) {
   // Number of milliseconds per unit of time
